@@ -42,7 +42,7 @@ class BusinessWorker extends Worker
      *
      * @var string
      */
-    public $registerAddress = '127.0.0.1:1236';
+    public $registerAddress = '112.74.95.41:1236';
 
     /**
      * 事件处理类，默认是 Event 类
@@ -218,7 +218,7 @@ class BusinessWorker extends Worker
         }
 
         // 如果Register服务器不在本地服务器，则需要保持心跳
-        if (strpos($this->registerAddress, '127.0.0.1') !== 0) {
+        if (strpos($this->registerAddress, '112.74.95.41') !== 0) {
             Timer::add(self::PERSISTENCE_CONNECTION_PING_INTERVAL, array($this, 'pingRegister'));
         }
     }
@@ -510,7 +510,7 @@ class BusinessWorker extends Worker
     public function pingRegister()
     {
         if ($this->_registerConnection) {
-            $this->_registerConnection->send('{"event":"ping"}');
+            $this->_registerConnection->send('{"event":"SPing"}');
         }
     }
 }

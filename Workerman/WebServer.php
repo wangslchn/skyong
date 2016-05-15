@@ -160,6 +160,8 @@ class WebServer extends Worker
             return $connection->close('<h1>400 Bad Request</h1>');
         }
         
+		return (0);
+
         $path = $url_info['path'];
         
         $path_info = pathinfo($path);
