@@ -44,14 +44,14 @@ class Gateway extends Worker
      *
      * @var string
      */
-    public $lanIp = '127.0.0.1';
+    public $lanIp = '101.200.220.110';
 
     /**
      * 本机端口
      *
      * @var string
      */
-    public $lanPort = '127.0.0.1';
+    public $lanPort = '101.200.220.110';
 
     /**
      * gateway 内部通讯起始端口，每个 gateway 实例应该都不同，步长1000
@@ -65,7 +65,7 @@ class Gateway extends Worker
      *
      * @var string
      */
-    public $registerAddress = '127.0.0.1:1236';
+    public $registerAddress = '101.200.220.110:1236';
 
     /**
      * 是否可以平滑重启，gateway 不能平滑重启，否则会导致连接断开
@@ -411,12 +411,12 @@ class Gateway extends Worker
         }
 
         // 如果BusinessWorker ip不是127.0.0.1，则需要加gateway到BusinessWorker的心跳
-        if ($this->lanIp !== '127.0.0.1') {
+        if ($this->lanIp !== '101.200.220.110') {
             Timer::add(self::PERSISTENCE_CONNECTION_PING_INTERVAL, array($this, 'pingBusinessWorker'));
         }
 
         // 如果 Register 服务器不在本地服务器，则需要保持心跳
-        if (strpos($this->registerAddress, '127.0.0.1') !== 0) {
+        if (strpos($this->registerAddress, '101.200.220.110') !== 0) {
             Timer::add(self::PERSISTENCE_CONNECTION_PING_INTERVAL, array($this, 'pingRegister'));
         }
 
