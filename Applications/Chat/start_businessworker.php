@@ -26,7 +26,7 @@ $worker->name = 'ChatBusinessWorker';
 // bussinessWorker进程数量
 $worker->count = 4;
 // 服务注册地址
-$worker->registerAddress = '112.74.95.41:1236';
+$worker->registerAddress = '101.200.220.110:1236';
 
 // 如果不是在根目录启动，则运行runAll方法
 if(!defined('GLOBAL_START'))

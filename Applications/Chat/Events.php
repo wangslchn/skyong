@@ -19,6 +19,7 @@
  */
 //declare(ticks=1);
 
+
 /**
  * 聊天主逻辑
  * 主要是处理 onMessage onClose 
@@ -26,6 +27,8 @@
 use \GatewayWorker\Lib\Gateway;
 
 $gl_chatid = "123";
+
+$gl_client_user='{"stat":"OK","type":"UonlineUser","roomListUser":[{"client_id":8888,"client_name":{"roomid":"1","chatid":"x0528EEF1","nick":"\u6e38\u5ba20528EEF1","sex":"0","age":"0","qx":"0","ip":"113.88.73.252","vip":"AA6","color":"0","cam":"0","state":"0","mood":""}}]}';
 
 
  if(get_magic_quotes_gpc()){
@@ -72,6 +75,55 @@ class Events
 
 
 	   global $gl_chatid;
+   	  global $gl_client_user;
+	  
+$gl_client_user = array (
+	"stat"=> "OK",
+	"type"=> "UonlineUser",
+	"roomListUser"=> array (
+	array
+	( 
+		"client_id"=> 8888,
+		"client_name"=> array 
+		(
+			"roomid"=> "1",
+			"chatid"=>"x05287A98",
+			"nick"=> "test1",
+			"sex"=> "0",
+			"age"=> "0",
+			"qx"=> "0",
+			"ip"=> "113.88.73.252",
+			"vip"=> "AA6",
+			"color"=> "0",
+			"cam"=> "0",
+			"state"=> "0",
+			"mood"=> ""
+		)
+	),
+	array
+	( 
+		"client_id"=> 8288,
+		"client_name"=> array 
+		(
+			"roomid"=> "1",
+			"chatid"=>"x05287A91",
+			"nick"=> "test2",
+			"sex"=> "0",
+			"age"=> "0",
+			"qx"=> "0",
+			"ip"=> "113.88.73.252",
+			"vip"=> "AA6",
+			"color"=> "0",
+			"cam"=> "0",
+			"state"=> "0",
+			"mood"=> ""
+		)
+	)
+
+
+  )
+);
+
 
         // debug
         echo "client:{$_SERVER['REMOTE_ADDR']}:{$_SERVER['REMOTE_PORT']} gateway:{$_SERVER['GATEWAY_ADDR']}:{$_SERVER['GATEWAY_PORT']}  client_id:$client_id session:".json_encode($_SESSION)."\n onMessage:".$message."\n";
@@ -159,31 +211,7 @@ class Events
 				//echo "\n";
 				//echo $resultstr2;
 
-/*
-	var str = '[{"uname":"王强","day":"2010/06/17"},{"uname":"王海云","day":"2010/06/11"}]';  
-	var jsonList=eval("("+str+")");
 
-//	这时候假设我们不知道"uname"和"day"这两个key值，我们开始对jsonList执行循环操作。 
-
-　　for(var i=0;i<jsonList.length;i++){
-
- 　　　　for(var key in jsonList[i]){
-
-         　　alert("key："+key+",value："+jsonList[i][key]); 
-
-        } 
-
- 　　}
-
-//　　这样我们就可以轻松的获取我所需要的key值和value值了
-
-
-$v = {"message":"ok","data":[{"time":"2011-08-08 08:08:00","context":"文字文字文字"}]};
-
-$time = $v["data"]["time"];
-$context= $v["data"]["context"];
-
-*/
 
 				//{"stat":"OK","type":"Ulogin","Ulogin":{"roomid":"1","chatid":"x423A87E","nick":"\u6e38\u5ba20423A87E","sex":"0","age":"0","qx":"0","ip":"116.25.79.1","vip":"AA6","color":"0","cam":"0","state":"0","mood":""})
 
@@ -196,6 +224,66 @@ $context= $v["data"]["context"];
 				//$sendmsg = '{"stat":"OK","type":"Ulogin","Ulogin":{"roomid":"1","chatid":"x43363E9","nick":"\u6e38\u5ba2042263E9","sex":"0","age":"0","qx":"0","ip":"116.25.79.1","vip":"AA6","color":"0","cam":"0","state":"0","mood":""}}';
 
 				//$str=stripslashes($message);
+
+
+//----------------------------------------------------------------------------------------------------------------------------------
+		//wangsl add
+
+		$clients_roomListUser = array(
+		"client_id"=> 1000,
+		"client_name"=> array (
+			"roomid"=> "1",
+			"chatid"=> "1",
+			"nick"=> "test",
+			"sex"=> "0",
+			"age"=> "0",
+			"qx"=> "1",
+			"ip"=> "113.88.73.252",
+			"vip"=> "AA1",
+			"color"=> "2",
+			"cam"=> "0",
+			"state" => "0",
+			"mood"=> "bibi"
+		)
+);
+
+		//获取客户登陆信息
+		var_dump("-------------get user info--------------------");
+		$message_data = json_decode($online_client_id_one, true);
+		var_dump($message_data);
+
+		//取房间用户列表
+		var_dump("-------------get room list user--------------------");
+		$clients_roomListUser = $message_data;
+		var_dump($clients_roomListUser);
+
+		//检查房间信息是否存在全局数组中
+		if (in_array($clients_roomListUser, $gl_client_user['roomListUser']))
+		{
+			echo "in array key exit! \n";
+		}
+		else
+		{
+			echo "in array key no exit! \n";
+			array_push($gl_client_user['roomListUser'], $clients_roomListUser);
+		}
+	
+
+		$out_array = json_encode($gl_client_user, true);
+		echo "--- json_encode ---\n";
+		//var_dump($out_array);
+
+		//var_dump("-------------gl_client_user--------------------");
+		//var_dump($gl_client_user);
+
+		//wangsl  end
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
 				  $message_data = json_decode($resultstr, true);
 
 				  Gateway::sendToCurrentClient(json_encode($message_data));
@@ -208,11 +296,16 @@ $context= $v["data"]["context"];
 				 //$str=stripslashes($commandstr);
 				 //echo $str;
 				 //Gateway::sendToCurrentClient($commandstr);
-				   $message_data = json_decode($resultstr2, true);
+				 
+				  //$message_data = json_decode($resultstr2, true);
+				  //Gateway::sendToCurrentClient(json_encode($message_data)); 
+	
+				 // $message_data = json_decode($gl_client_user, true);
+				  //Gateway::sendToCurrentClient(json_encode($gl_client_user));
+				//$message_data = json_encode($gl_client_user, true);
+				var_dump($out_array);
+				Gateway::sendToCurrentClient($out_array);
 
-				  Gateway::sendToCurrentClient(json_encode($message_data));
-
-				  //Gateway::sendToCurrentClient($resultstr2);
 				return;
 
 			case 'SendMsg':
