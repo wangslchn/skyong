@@ -61,6 +61,13 @@ class Context
      * @var int
      */
     public static $connection_id;
+    
+    /**
+     * 旧的session
+     * 
+     * @var string
+     */
+    public static $old_session;
 
     /**
      * 编码 session
@@ -95,7 +102,7 @@ class Context
     public static function clear()
     {
         self::$local_ip = self::$local_port = self::$client_ip = self::$client_port =
-        self::$client_id = self::$connection_id = null;
+        self::$client_id = self::$connection_id  = self::$old_session = null;
     }
 
     /**
@@ -121,7 +128,8 @@ class Context
     public static function clientIdToAddress($client_id)
     {
         if (strlen($client_id) !== 20) {
-            throw new Exception("client_id $client_id is invalid");
+            echo new Exception("client_id $client_id is invalid");
+            return false;
         }
         return unpack('Nlocal_ip/nlocal_port/Nconnection_id', pack('H*', $client_id));
     }
